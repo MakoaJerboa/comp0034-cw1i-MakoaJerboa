@@ -1,7 +1,5 @@
 import os
-
 from flask import Flask
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 
@@ -9,7 +7,9 @@ from sqlalchemy.orm import DeclarativeBase
 class Base(DeclarativeBase):
     pass
 
+
 db = SQLAlchemy(model_class=Base)
+
 
 def create_app(test_config=None):
     # create the Flask app
@@ -39,7 +39,7 @@ def create_app(test_config=None):
 
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
-    from coursework1.models import Hours, Area, Total
+    from coursework1.models import YR2011, YR2021
     # Create the tables in the database
     # create_all does not update tables if they are already in the database.
 
@@ -58,43 +58,44 @@ def add_data_from_csv():
     """Adds data to the database if it does not already exist."""
 
     # Add import here and not at the top of the file to avoid circular import issues
-    from coursework1.models import Area, Total, Hours
-    
-    # If there are no regions in the database, then add them
-    first_area = db.session.execute(db.select(Area)).first()
+    from coursework1.models import YR2011, YR2021
+
+    # Imports data if database is empty
+    first_area = db.session.execute(db.select(YR2011)).first()
     if not first_area:
-        print("Start adding region data to the database")
         area_file = Path(__file__).parent.joinpath("data", "dataset_prepared_2011.csv")
         with open(area_file, 'r') as file:
             csv_reader = csv.reader(file)
             next(csv_reader)  # Skip header row
             for row in csv_reader:
                 # row[0] is the first column, row[1] is the second column
-                a = Area(area=row[1])
-                db.session.add(a)
+                yr2011 = YR2011(
+                    area=row[1],
+                    total=row[2],
+                    fifteen_or_less=row[3],
+                    sixteen_to_thirty=row[4],
+                    thirty_one_to_forty_eight=row[5],
+                    forty_nine_or_more=row[6]
+                )
+                db.session.add(yr2011)
             db.session.commit()
     
-
-    # If there are no Events, then add them
-    file = Path(__file__).parent.joinpath("data", "dataset_prepared_2011.csv")
-    with open(file, 'r') as file:
-        csv_reader = csv.reader(file)
-        next(csv_reader)  # Skip header row
-        for row in csv_reader:
-            # row[0] is the first column, row[1] is the second column etc
-            # For int data types, if there is no value, set to None rather than ''
-            t = Total(total=row[2],)
-            db.session.add(t)
-        db.session.commit()
-
-    # If there are no Events, then add them
-    file = Path(__file__).parent.joinpath("data", "dataset_prepared_2011.csv")
-    with open(file, 'r') as file:
-        csv_reader = csv.reader(file)
-        next(csv_reader)  # Skip header row
-        for row in csv_reader:
-            # row[0] is the first column, row[1] is the second column etc
-            # For int data types, if there is no value, set to None rather than ''
-            h = Hours(total=row[2],)
-            db.session.add(h)
-        db.session.commit()
+    # Imports data if database is empty as above
+    first_area = db.session.execute(db.select(YR2021)).first()
+    if not first_area:
+        area_file = Path(__file__).parent.joinpath("data", "dataset_prepared_2021.csv")
+        with open(area_file, 'r') as file:
+            csv_reader = csv.reader(file)
+            next(csv_reader)  # Skip header row
+            for row in csv_reader:
+                # row[0] is the first column, row[1] is the second column
+                yr2021 = YR2021(
+                    area=row[1],
+                    total=row[2],
+                    fifteen_or_less=row[3],
+                    sixteen_to_thirty=row[4],
+                    thirty_one_to_forty_eight=row[5],
+                    forty_nine_or_more=row[6]
+                )
+                db.session.add(yr2021)
+            db.session.commit()
