@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from flask_marshmallow import Marshmallow
 
 
 class Base(DeclarativeBase):
@@ -9,6 +10,8 @@ class Base(DeclarativeBase):
 
 
 db = SQLAlchemy(model_class=Base)
+# Create a global Flask-Marshmallow object
+ma = Marshmallow()
 
 
 def create_app(test_config=None):
@@ -16,7 +19,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     # configure the Flask app (see later notes on how to generate your own SECRET_KEY)
     app.config.from_mapping(
-        SECRET_KEY='dev',
+        SECRET_KEY='iHj8IsK7uF6s660Y9QGkrg',
         # Set the location of the database file called paralympics.sqlite which will be in the app's instance folder
         SQLALCHEMY_DATABASE_URI= "sqlite:///" + os.path.join(app.instance_path, 'coursework1.sqlite'),  
     )
@@ -34,8 +37,10 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-     # Initialise Flask with the SQLAlchemy database extension
+    # Initialise Flask with the SQLAlchemy database extension
     db.init_app(app)
+    # Initialise Flask-Marshmallow
+    ma.init_app(app)
 
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
