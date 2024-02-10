@@ -1,39 +1,42 @@
 from flask import current_app as app
 from coursework1 import db
 from coursework1.models import YR2011, YR2021
-from flask import request
+from flask import request, url_for
 from coursework1.schemas import YR2011Schema, YR2021Schema
 
 
+# Defines a route for the default page which links to the others
 app.app_context()
-@app.route('/')
-def hello():
-  return f"Landing Page"
+@app.get('/')
+def landing_page():
+    """Returns the landing page with a hyperlink to the /yr2011 route."""
+    return f"<h1>Landing Page</h1>\
+    <a href='{url_for('get_yr2011')}'>See data from 2011</a>\
+    <a href='{url_for('get_yr2021')}'>See data from 2021</a>\
+    <br>\
+    <body>You can also see data for a specific year and area by going to /yr(2011 or 2021)/(name of area) without brackets</body>"
 
 
 # Flask-Marshmallow Schemas
 YR2011_schema = YR2011Schema(many=True)
-#YR2011_schema = YR2011Schema()
 YR2021_schema = YR2021Schema(many=True)
-#YR2021_schema = YR2021Schema()
 
 
-# Use Flask shortcut methods for each HTTP method `.get`, `.post`, `.delete`, `.patch`, `.put`
+# Used Flask shortcut methods for each GET HTTP method `.get`, `.post` and `.delete`
 @app.get("/yr2011")
 def get_yr2011():
-    """Returns a list of NOC region codes and their details in JSON."""
-    # Select all the regions using Flask-SQLAlchemy
+    """Returns for all data collected in 2011 in JSON."""
+    # Select all the areas using Flask-SQLAlchemy
     all = db.session.execute(db.select(YR2011)).scalars()
     # Get the data using Marshmallow schema (returns JSON)
     result = YR2011_schema.dump(all)
     # Return the data
     return result
 
-# Use Flask shortcut methods for each HTTP method `.get`, `.post`, `.delete`, `.patch`, `.put`
 @app.get("/yr2021")
 def get_yr2021():
-    """Returns a list of NOC region codes and their details in JSON."""
-    # Select all the regions using Flask-SQLAlchemy
+    """Returns for all data collected in 2021 in JSON."""
+    # Select all the area using Flask-SQLAlchemy
     all = db.session.execute(db.select(YR2021)).scalars()
     # Get the data using Marshmallow schema (returns JSON)
     result = YR2021_schema.dump(all)
@@ -43,10 +46,10 @@ def get_yr2021():
 
 @app.get("/yr2011/<yr2011_area>")
 def get_yr2011_area(yr2011_area):
-    """ Returns the event with the given id JSON.
+    """ Returns the data for the given area name for 2011 in JSON.
 
-    :param event_id: The id of the event to return
-    :param type event_id: int
+    :param yr2011_area: The name of the area to return data for
+    :param type yr2011_area: str
     :returns: JSON
     """
     event = db.session.execute(
@@ -55,10 +58,10 @@ def get_yr2011_area(yr2011_area):
 
 @app.get("/yr2021/<yr2021_area>")
 def get_yr2021_area(yr2021_area):
-    """ Returns the event with the given id JSON.
+    """ Returns the data for the given area name for 2021 in JSON.
 
-    :param event_id: The id of the event to return
-    :param type event_id: int
+    :param yr2021_area: The name of the area to return data for
+    :param type yr2021_area: str
     :returns: JSON
     """
     event = db.session.execute(
@@ -68,7 +71,7 @@ def get_yr2021_area(yr2021_area):
 
 @app.post('/newarea2011')
 def new_area2011():
-    """ Adds a new event.
+    """ Adds data for a new area for 2011.
     
     Gets the JSON data from the request body and uses this to deserialise JSON to an object using Marshmallow 
     event_schema.load()
@@ -83,7 +86,7 @@ def new_area2011():
 
 @app.post('/newarea2021')
 def new_area2021():
-    """ Adds a new event.
+    """ Adds data for a new area for 2011.
     
     Gets the JSON data from the request body and uses this to deserialise JSON to an object using Marshmallow 
     event_schema.load()
@@ -99,9 +102,9 @@ def new_area2021():
 
 @app.delete('/deletearea2011/<yr2011area>')
 def delete_yr2011(yr2011area):
-    """ Deletes an event.
+    """ Deletes data for an area for 2011.
     
-    Gets the event from the database and deletes it.
+    Gets the area data from the database and deletes it.
 
     :returns: JSON"""
     event = db.session.execute(
@@ -112,9 +115,9 @@ def delete_yr2011(yr2011area):
 
 @app.delete('/deletearea2021/<yr2021area>')
 def delete_yr2021(yr2021area):
-    """ Deletes an event.
+    """ Deletes data for an area for 2021.
     
-    Gets the event from the database and deletes it.
+    Gets the area data from the database and deletes it.
 
     :returns: JSON"""
     event = db.session.execute(

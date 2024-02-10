@@ -1,5 +1,4 @@
-# COMP0034 Coursework 1 2023/24
-COMP0034 Coursework 1 starter repository
+# Coursework 1 Markdown
 
 ## Usage
 ### Create Virtual Enviroment
@@ -16,3 +15,12 @@ The code can be run from the terminal by typing "flask --app coursework1 run --d
 
 ### Function
 Upon loading the webpage, you'll be on the landing page, from here you can click the links to view data on 2011 or 2021. You can also view data about a specific area by navigating to /yr2011/area name or /yr2021/area name . For example, to view data on Brent in the year 2011, you would navigate to /yr2011/Brent . For areas with spaces in their name also function the same way.
+
+## Testing
+All tests ran successfully, and the testing database is erased when testing is complete.
+
+![Tests](./images/Tests.png)
+
+## References
+### Use of AI
+Github Copilot was used for autocomplete and debugging some errors.

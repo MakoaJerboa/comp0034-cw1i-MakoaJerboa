@@ -1,7 +1,7 @@
 def test_get_yr2011_status_code(client):
     """
     GIVEN a Flask test client
-    WHEN a request is made to /regions
+    WHEN a request is made to /yr2011
     THEN the status code should be 200
     """
     response = client.get("/yr2011")
@@ -11,8 +11,8 @@ def test_get_yr2011_status_code(client):
 def test_get_yr2011_json(client):
     """
     GIVEN a Flask test client
-    AND the database contains data of the regions
-    WHEN a request is made to /regions
+    AND the database contains data of the areas
+    WHEN a request is made to /yr2011
     THEN the response should contain json
     AND a JSON object for Barking should be in the json
     """
@@ -30,7 +30,7 @@ def test_get_yr2011_json(client):
 def test_get_yr2021_status_code(client):
     """
     GIVEN a Flask test client
-    WHEN a request is made to /regions
+    WHEN a request is made to /yr2021
     THEN the status code should be 200
     """
     response = client.get("/yr2021")
@@ -39,8 +39,8 @@ def test_get_yr2021_status_code(client):
 def test_get_yr2021_json(client):
     """
     GIVEN a Flask test client
-    AND the database contains data of the regions
-    WHEN a request is made to /regions
+    AND the database contains data of the areas
+    WHEN a request is made to /yr2021
     THEN the response should contain json
     AND a JSON object for Barking should be in the json
     """
@@ -58,7 +58,7 @@ def test_get_yr2021_json(client):
 def test_get_area_yr2011_status_code(client):
     """
     GIVEN a Flask test client
-    WHEN a request is made to /regions/Barnet
+    WHEN a request is made to /yr2011/Barnet
     THEN the status code should be 200
     """
     response = client.get("/yr2011/Barnet")
@@ -67,10 +67,11 @@ def test_get_area_yr2011_status_code(client):
 def test_get_area_yr2011_json(client):
     """
     GIVEN a Flask test client
-    AND the database contains data of the regions
+    AND the database contains data of the Barnet area
     WHEN a request is made to /regions/Barnet
     THEN the response should contain json
-    AND a JSON object for Barnet should be in the json
+    AND a JSON object for Barnet should be identical to
+    the response JSON
     """
     response = client.get("/yr2011/Barnet")
     assert response.headers["Content-Type"] == "application/json"
@@ -86,7 +87,7 @@ def test_get_area_yr2011_json(client):
 def test_get_area_yr2021_status_code(client):
     """
     GIVEN a Flask test client
-    WHEN a request is made to /regions/Barnet
+    WHEN a request is made to /yr2021/Barnet
     THEN the status code should be 200
     """
     response = client.get("/yr2021/Barnet")
@@ -96,7 +97,7 @@ def test_get_area_yr2021_json(client):
     """
     GIVEN a Flask test client
     AND the database contains data of the regions
-    WHEN a request is made to /regions/Barnet
+    WHEN a request is made to /yr2021/Barnet
     THEN the response should contain json
     AND a JSON object for Barnet should be in the json
     """
@@ -114,11 +115,11 @@ def test_get_area_yr2021_json(client):
 def test_post_yr2011(client):
     """
     GIVEN a Flask test client
-    AND valid JSON for a new region
+    AND valid JSON for a new area
     WHEN a POST request is made to /newarea2011
     THEN the response status_code should be 200
     """
-    # JSON to create a new region
+    # JSON to create a new area
     newarea_json = [{
     "area": "test",
     "fifteen_or_less": 0,
@@ -139,8 +140,8 @@ def test_post_yr2011(client):
 def test_post_yr2021(client):
     """
     GIVEN a Flask test client
-    AND valid JSON for a new region
-    WHEN a POST request is made to /newarea2011
+    AND valid JSON for a new area
+    WHEN a POST request is made to /newarea2021
     THEN the response status_code should be 200
     """
     # JSON to create a new region
@@ -171,6 +172,16 @@ def test_delete_yr2011(client):
     response = client.delete("/deletearea2011/Brent")
     assert response.status_code == 200
 
+def test_delete2_yr2011(client):
+    """
+    GIVEN a Flask test client
+    AND a region exists in the database
+    WHEN a DELETE request is made to /deletearea2011/Bromley
+    THEN the response status_code should be 200
+    """
+    response = client.delete("/deletearea2011/Bromley")
+    assert response.status_code == 200
+
 
 def test_delete_yr2021(client):
     """
@@ -180,4 +191,14 @@ def test_delete_yr2021(client):
     THEN the response status_code should be 200
     """
     response = client.delete("/deletearea2021/Brent")
+    assert response.status_code == 200
+
+def test_delete_yr2021(client):
+    """
+    GIVEN a Flask test client
+    AND a region exists in the database
+    WHEN a DELETE request is made to /deletearea2021/Bromley
+    THEN the response status_code should be 200
+    """
+    response = client.delete("/deletearea2021/Bromley")
     assert response.status_code == 200

@@ -1,15 +1,7 @@
 import os
 from pathlib import Path
 import pytest
-from coursework1 import create_app
-
-try:
-    # clean up / reset resources
-    # Delete the test database
-    db_path = Path(__file__).parent.parent.parent.joinpath('instance', 'coursework1_testdb.sqlite')
-    os.unlink(db_path)
-except FileNotFoundError:
-    pass
+from coursework1 import create_app, db
 
 
 @pytest.fixture(scope='module')
@@ -30,8 +22,24 @@ def app():
     }
     app = create_app(test_config=test_cfg)
 
+    # # Push an application context to bind the SQLAlchemy object to the application
+    with app.app_context():
+        db.create_all()
+
     yield app
 
+    # # Clean up / reset resources
+    with app.app_context():
+        db.session.remove()  # Close the database session
+        db.drop_all()
+
+        # Explicitly close the database connection
+        db.engine.dispose()
+
+    # Delete the test database
+    os.unlink(db_path)
+
+# Runs ths test code
 @pytest.fixture()
 def client(app):
     return app.test_client()

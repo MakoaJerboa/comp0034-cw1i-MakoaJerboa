@@ -3,9 +3,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_marshmallow import Marshmallow
+import csv
+from pathlib import Path
 
 
 class Base(DeclarativeBase):
+    """
+    This is the base class for the coursework1 module.
+    """
     pass
 
 
@@ -17,10 +22,10 @@ ma = Marshmallow()
 def create_app(test_config=None):
     # create the Flask app
     app = Flask(__name__, instance_relative_config=True)
-    # configure the Flask app (see later notes on how to generate your own SECRET_KEY)
+    # configure the Flask app
     app.config.from_mapping(
         SECRET_KEY='iHj8IsK7uF6s660Y9QGkrg',
-        # Set the location of the database file called paralympics.sqlite which will be in the app's instance folder
+        # Set the location of the database file called coursework1.sqlite which will be in the app's instance folder
         SQLALCHEMY_DATABASE_URI= "sqlite:///" + os.path.join(app.instance_path, 'coursework1.sqlite'),  
     )
 
@@ -56,8 +61,6 @@ def create_app(test_config=None):
 
     return app
 
-import csv
-from pathlib import Path
 
 def add_data_from_csv():
     """Adds data to the database if it does not already exist."""
@@ -73,6 +76,7 @@ def add_data_from_csv():
             csv_reader = csv.reader(file)
             next(csv_reader)  # Skip header row
             for row in csv_reader:
+                # Defines which columns are which variables from the csv file
                 # row[0] is the first column, row[1] is the second column
                 yr2011 = YR2011(
                     area=row[1],
@@ -93,6 +97,7 @@ def add_data_from_csv():
             csv_reader = csv.reader(file)
             next(csv_reader)  # Skip header row
             for row in csv_reader:
+                # Defines which columns are which variables from the csv file
                 # row[0] is the first column, row[1] is the second column
                 yr2021 = YR2021(
                     area=row[1],
