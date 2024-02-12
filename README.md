@@ -1,6 +1,9 @@
 # COMP0034 Coursework 1 2023/24
 COMP0034 Coursework 1 starter repository
 
+## Link to Repository
+https://github.com/ucl-comp0035/comp0034-cw1i-MakoaJerboa
+
 ## Usage
 ### Create Virtual Enviroment
 In the terminal, type "py -m venv .venv" for Windows or "python3 -m venv .venv" for Unix/macOS (without the quotes)
